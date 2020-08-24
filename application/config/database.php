@@ -79,7 +79,7 @@ $db['default'] = array(
 	'username' => 'admin',
 	'password' => 'lucas123',
 	'database' => 'intereventos',
-	'dbdriver' => 'mysq-li',
+	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),
