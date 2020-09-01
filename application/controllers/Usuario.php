@@ -17,7 +17,9 @@ class Usuario extends CI_Controller {
     {
         switch ($this->input->method()) {
             case 'get':
-                echo json_encode($this->usuario_model->getUsers());
+                $login = $_GET['login'];
+                $senha = $_GET['senha'];
+                echo json_encode($this->usuario_model->getUsers($login, $senha));
         }
     }
 }
