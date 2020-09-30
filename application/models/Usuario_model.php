@@ -11,6 +11,8 @@ class Usuario_model extends CI_Model{
          ->having("senha_usuario", md5($dados['senha']))
          ->having("tipo_usuario", $dados['tipo'])
             ->get("usuario")->result_array();
+      }else{
+         return false;
       }
    }
 }
