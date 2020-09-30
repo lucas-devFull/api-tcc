@@ -17,9 +17,33 @@ class Usuario extends MY_Controller {
     {
         switch ($this->input->method()) {
             case 'get':
-                $login = $_GET['login'];
-                $senha = $_GET['senha'];
-                echo json_encode($this->usuario_model->getUsers($this->getContent()));
+
+
+                $insert_data = [
+                    'login' => $_GET['login'],
+                    'senha' => $_GET['senha'],
+                    'tipo' => $_GET['tipo'],
+                    'created_at' => time(),
+                    'updated_at' => time(),
+                ];
+
+// var_dump($token);
+                $return = [
+                    'login' => $_GET['login'],
+                    'senha' => $_GET['senha'],
+                    'tipo' => $_GET['tipo'],
+                    'created_at' => time(),
+                    'updated_at' => time(),
+                    'token' => $token 
+                ];
+
+                print_r($this->dadosSessao($return));
+                // echo json_encode($return);
+
+                // $login = $_GET['login'];
+                // $senha = $_GET['senha'];
+                // echo json_encode($this->usuario_model->getUsers($this->getContent()));
+                
         }
     }
 }
