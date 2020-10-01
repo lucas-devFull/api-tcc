@@ -44,7 +44,7 @@ class Usuario_model extends CI_Model{
    }
 
    public function validaNickUsuario($string, $chave){
-     $this->db->like($chave, $string, "both");
+     $this->db->where($chave, $string);
      return $this->db->get("usuario")->result_array();
    }
 }
