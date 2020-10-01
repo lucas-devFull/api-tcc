@@ -21,30 +21,26 @@ class Usuario_model extends CI_Model{
    }
 
    public function cadastraUsuario($dados){
-      if (!empty($dados)) {
-         if (!empty($this->validaNickUsuario($dados['email_usuario'], "email_usuario"))) {
-            return "ja existe este email cadastrado -> " . $dados['email_usuario'];
-         }
-      
-         if (!empty($this->validaNickUsuario($dados["nick_usuario"], "nick_usuario"))) {
-            return "ja existe este username -> " . $dados['nick_usuario'];
-         }
-
-         $this->db->set("email_usuario", $dados['email_usuario']);
-         $this->db->set("nick_usuario", $dados['nick_usuario']);
-         $this->db->set("senha_usuario", md5($dados['senha']));
-         $this->db->set("descricao_usuario", $dados['senha']);
-         $this->db->set("tipo_usuario", 2);
-         $this->db->insert('usuario');
-         $id_usuario = $this->db->insert_id();
-        
-         $dadosAluno = array("descricao_usu_aluno" => $dados['descricao_usuario'], "id_usuario_aluno" => $id_usuario);
-         $this->aluno_model->cadastraAluno($dadosAluno);
-
-         return array("status" => true);
-      }else{
-         return array("status" => false);
+      if (!empty($this->validaNickUsuario($dados['email_usuario'], "email_usuario"))) {
+         return "ja existe este email cadastrado -> " . $dados['email_usuario'];
       }
+   
+      if (!empty($this->validaNickUsuario($dados["nick_usuario"], "nick_usuario"))) {
+         return "ja existe este username -> " . $dados['nick_usuario'];
+      }
+
+      $this->db->set("email_usuario", $dados['email_usuario']);
+      $this->db->set("nick_usuario", $dados['nick_usuario']);
+      $this->db->set("senha_usuario", md5($dados['senha']));
+      $this->db->set("descricao_usuario", $dados['senha']);
+      $this->db->set("tipo_usuario", 2);
+      $this->db->insert('usuario');
+      $id_usuario = $this->db->insert_id();
+      
+      $dadosAluno = array("descricao_usu_aluno" => $dados['descricao_usuario'], "id_usuario_aluno" => $id_usuario);
+      $this->aluno_model->cadastraAluno($dadosAluno);
+
+      return array("status" => true);
    }
 
    public function validaNickUsuario($string, $chave){
