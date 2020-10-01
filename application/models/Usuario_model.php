@@ -23,10 +23,14 @@ class Usuario_model extends CI_Model{
 
    public function cadastraUsuario($dados){
       if (!empty($dados)) {
-         if (!empty($this->validaNickUsuario($dados))) {
+         if (!empty($this->validaNickUsuario($dados, "email_usuario"))) {
             return "ja existe um login com esse nome " . $dados['email_usuario'];
          }
       
+         if (!empty($this->validaNickUsuario($dados, "nick_usuario"))) {
+            return "ja existe um login com esse nome " . $dados['nick_usuario'];
+         }
+
          $this->db->set("email_usuario", $dados['email_usuario']);
          $this->db->set("nick_usuario", $dados['nick_usuario']);
          $this->db->set("senha_usuario", md5($dados['senha']));
@@ -44,9 +48,8 @@ class Usuario_model extends CI_Model{
       }
    }
 
-   public function validaNickUsuario($string){
-     $this->db->like("email_usuario", $string['email_usuario'], "both");
-     $this->db->or_like("nick_usuario", $string['nick_usuario'], "both");
+   public function validaNickUsuario($string, $chave){
+     $this->db->like($chave, $string['email_usuario'], "both");
      return $this->db->get("usuario")->result_array();
    }
 }
