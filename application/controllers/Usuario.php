@@ -21,13 +21,12 @@ class Usuario extends CI_Controller {
             case 'get':
                 $data = [
                     'login' => $_GET['login'],
-                    'senha' => $_GET['senha'],
-                    'created_at' => time(),
-                    'updated_at' => time(),
+                    'time' => time(),
                 ];
                 $resultado = $this->usuario_model->getUsers($_GET);
                 if($resultado != false || !empty($resultado)){
-                    $token = $this->authorization_token->generateToken($resultado);
+                    $data['id'] = $resultado["id_usuario"];
+                    $token = $this->authorization_token->generateToken($data);
                     $data['tipo'] = $resultado["tipo_usuario"];
                     $data['token'] = $token;
                     echo json_encode(array('status' => true, 'dados' => $data));
