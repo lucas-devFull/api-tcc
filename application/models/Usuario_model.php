@@ -14,7 +14,7 @@ class Usuario_model extends CI_Model{
          ->where("email_usuario", $dados['login'])
          ->or_where("nick_usuario", $dados['login'])
          ->having("senha_usuario", md5($dados['senha']))
-         ->get("usuario")->result_array();
+         ->get("usuario")->row_array();
       }else{
          return false;
       }
