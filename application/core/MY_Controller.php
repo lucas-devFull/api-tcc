@@ -18,6 +18,20 @@ class MY_Controller extends CI_Controller {
         }
     }
 
+    public function validaNickUsuario($dados){
+        $this->db->where($dados['email_usuario'], "email_usuario");
+        if($this->db->get("usuario")->result_array()){
+            return "ja existe este email cadastrado -> " . $dados['email_usuario'];
+        }
+
+        $this->db->where($dados['nick_usuario'], "nick_usuario");
+        if($this->db->get("usuario")->result_array()){
+            return "ja existe este email cadastrado -> " . $dados['nick_usuario'];
+        }
+
+        return true;
+    }
+
     function getContent($parametro = false) {
         $contents = null;
         switch (strtolower($_SERVER['REQUEST_METHOD'])) {
