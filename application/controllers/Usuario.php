@@ -11,7 +11,6 @@ class Usuario extends CI_Controller {
     {
         parent::__construct();
         $this->load->model('usuario_model');
-        $this->load->model("aluno_model");
         $this->load->library("Authorization_Token");
 	}
 	

@@ -8,8 +8,14 @@ class Aluno_model extends CI_Model{
         parent::__construct();
     }
 
-    public function cadastraAluno($dados){
-        $this->db->set($dados);
-        $this->db->insert('usu_aluno');
+    function cadastraAluno($dados){
+        $dados["tipo_usuario"] = 2;
+        $dados["senha_usuario"] = md5($dados['senha']);
+        unset($dados["senha"]);
+
+        $dadosAluno = array("descricao_usu_aluno" => $dados['descricao_usuario'], "id_usuario_aluno" => $id_usuario['id']);
+        $resultInsert = $this->crudDefault($dadosAluno, "usu_aluno", "cadastro");
+  
     }
+
 }
