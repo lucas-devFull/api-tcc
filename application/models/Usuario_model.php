@@ -20,16 +20,58 @@ class Usuario_model extends MY_Model{
       }
    }
 
+   public function cadastraUsuarioDefault($dados){
+      $validacaoLogin = $this->validaNickUsuario($dados);
+      if (is_string($validacaoLogin)) {
+         echo json_encode(array("status" => false, "msg" => $validacaoLogin));
+         exit;
+      }
+      $dados['senha_usuario'] = md5($dados['senha_usuario']);
+      return $this->crudDefault($dados, "usuario", "cadastro");
+   }
+
+   public function editaUsuario($dados){
+
+      $dados['senha_usuario'] = md5($dados['senha_usuario']);
+      $infoUsuario = $this->buscaUsuario($dados['id_usuario']);
+      $dadosAlteracao = array_diff($dados, $infoUsuario);
+
+      if (isset($dadosAlteracao['email_usuario']) || isset($dadosAlteracao['nick_usuario'])) {
+         $validacaoLogin = $this->validaNickUsuario($dadosAlteracao);
+         if (is_string($validacaoLogin)) {
+            echo json_encode(array("status" => false, "msg" => $validacaoLogin));
+            exit;
+         }            
+      }
+      return $this->crudDefault($dadosAlteracao, "usuario", "edicao", array("id_usuario" => $dados['id_usuario']));
+   }
+
    public function cadastraUsuario($dados){
       $validacaoLogin = $this->validaNickUsuario($dados);
       if (is_string($validacaoLogin)) {
-         return $validacaoLogin;
+         echo json_encode(array("status" => false, "msg" => $validacaoLogin));
+         exit;
       }
-      $id_usuario = $this->crudDefault($dados, "usuario", "cadastro");      
-      return $id_usuario;
+      $dados['senha_usuario'] = md5($dados['senha_usuario']);
+      $id_usuario = $this->crudDefault($dados, "usuario", "cadastro");
+      $dadosAluno['descricao_usu_aluno'] = $dados['descricao_usuario'];
+      $dadosAluno['id_usuario_aluno'] = $id_usuario['id'];
+      return $this->crudDefault($dadosAluno, "usu_aluno", "cadastro");
    }
 
    public function deletaUsuario($dados){
+
+   }
+
+   public function buscaUsuario($id = 0){
+      if ($id != 0) {
+         return $this->db->select("*")
+         ->where("id_usuario", $id)
+         ->get("usuario")->row_array();
+      }else{
+         return $this->db->select("*")
+         ->get("usuario")->result_array();
+      }
 
    }
 }

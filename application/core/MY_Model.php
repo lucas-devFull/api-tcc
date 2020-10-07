@@ -14,10 +14,10 @@ class MY_Model extends CI_Model{
                 (isset($dados['select'])) ? $this->db->select($dados['select']) : ""; 
                 ($where != false && !empty($where) && !is_null($where)) ? $this->db->where($where) : "";
                 $resultado = $this->db->get($tabela);
-                if (!is_null($resultado) && !empty($resultado)) {
-                    return array("status" => true, "dados" => ($resultado->num_rows() > 0) ? $resultado->result_array() : $resultado->row_array());
+                if ($resultado->num_rows() > 0) {
+                    return array("status" => true, "dados" => $resultado->result_array());
                 }else{
-                    return array("status" => true, "dados" => "não tem dados");
+                    return array("status" => false, "dados" => "não tem dados");
                 }
             break;
             case 'cadastro':
@@ -55,14 +55,18 @@ class MY_Model extends CI_Model{
     }
 
     public function validaNickUsuario($dados){
-        $this->db->where("email_usuario", $dados['email_usuario']);
-        if($this->db->get("usuario")->result_array()){
-            return "ja existe este email cadastrado -> " . $dados['email_usuario'];
+        if (isset($dados['email_usuario'])) {
+            $this->db->where("email_usuario", $dados['email_usuario']);
+            if($this->db->get("usuario")->result_array()){
+                return "ja existe este email cadastrado -> " . $dados['email_usuario'];
+            }
         }
 
-        $this->db->where("nick_usuario", $dados['nick_usuario']);
-        if($this->db->get("usuario")->result_array()){
-            return "ja existe este email cadastrado -> " . $dados['nick_usuario'];
+        if (isset($dados['nick_usuario'])) {
+            $this->db->where("nick_usuario", $dados['nick_usuario']);
+            if($this->db->get("usuario")->result_array()){
+                return "ja existe este email cadastrado -> " . $dados['nick_usuario'];
+            }
         }
 
         return true;

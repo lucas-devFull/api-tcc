@@ -7,6 +7,7 @@ class Professor extends MY_Controller {
     {
         parent::__construct();
         $this->load->model("professor_model");
+        $this->load->model('usuario_model');
 	}
 	
     public function index()
@@ -16,21 +17,36 @@ class Professor extends MY_Controller {
                 echo json_encode($this->professor_model->crudDefault("", "usu_professor", "busca", $_GET));
             break;
             case 'delete':
-                $idUsuario = array("id_professor" => $_POST['id_professor']);
-                $idProfessor = array("id_usuario_professor" => $_POST['id_usuario_professor']);
+                $dados = $this->getContent();
+                $idProfessor = array("id_professor" => $dados['id_professor']);
+                $infoUsuario = $this->professor_model->crudDefault("", "usu_professor", "busca", $idProfessor);
+                $idUsuario = array("id_usuario" => $infoUsuario["dados"][0]['id_usuario_professor']);
                 $deletarProfessor = $this->professor_model->crudDefault("","usu_professor", "deletar", $idProfessor);
                 $deletarUsuario = $this->professor_model->crudDefault("","usuario", "deletar", $idUsuario);
-                if ($deletarProfessor['status']) {
-
-                }
+                echo json_encode($deletarUsuario);
             break;
             case 'post':
-                echo json_encode($this->professor_model->crudDefault($_POST, "usu_professor", "cadastro"));
+                $dados = $this->getContent();
+                $dados['tipo_usuario'] = 2;
+                $id_usuario = $this->usuario_model->cadastraUsuarioDefault($dados);
+                $dadosProfessor['descricao_professor'] = $dados['descricao_usuario'];
+                $dadosProfessor['id_usuario_professor'] = $id_usuario['id'];
+                echo json_encode($this->professor_model->crudDefault($dadosProfessor, "usu_professor", "cadastro"));
             break;
             case 'put':
-                $id = array("id_professor" => $_POST['id_professor']);
-                unset($_POST['id_professor']);
-                echo json_encode($this->professor_model->crudDefault($_POST, "usu_professor", "editar", $id));
+                $dados = $this->getContent();
+                $dados['tipo_usuario'] = 2;
+                $id = array("id_professor" => $dados['id_professor']);
+                unset($dados['id_professor']);
+                $infoUsuario = $this->professor_model->crudDefault("", "usu_professor", "busca", $id);
+                if(!$infoUsuario['status']) {
+                    echo json_encode($infoUsuario);
+                    exit;
+                }
+                $dados['id_usuario'] = $infoUsuario['dados'][0]["id_usuario_professor"];
+                $this->usuario_model->editaUsuario($dados);
+                $dadosProfessor['descricao_professor'] = $dados['descricao_usuario'];
+                echo json_encode($this->professor_model->crudDefault($dadosProfessor, "usu_professor", "edicao", $id));
             break;
         }
     }
