@@ -59,10 +59,6 @@ class Usuario_model extends MY_Model{
       return $this->crudDefault($dadosAluno, "usu_aluno", "cadastro");
    }
 
-   public function deletaUsuario($dados){
-
-   }
-
    public function buscaUsuario($id = 0){
       if ($id != 0) {
          return $this->db->select("*")
