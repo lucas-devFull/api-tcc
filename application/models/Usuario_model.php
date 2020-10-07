@@ -35,15 +35,18 @@ class Usuario_model extends MY_Model{
       $dados['senha_usuario'] = md5($dados['senha_usuario']);
       $infoUsuario = $this->buscaUsuario($dados['id_usuario']);
       $dadosAlteracao = array_diff($dados, $infoUsuario);
-
       if (isset($dadosAlteracao['email_usuario']) || isset($dadosAlteracao['nick_usuario'])) {
          $validacaoLogin = $this->validaNickUsuario($dadosAlteracao);
          if (is_string($validacaoLogin)) {
             echo json_encode(array("status" => false, "msg" => $validacaoLogin));
             exit;
-         }            
+         }
       }
-      return $this->crudDefault($dadosAlteracao, "usuario", "edicao", array("id_usuario" => $dados['id_usuario']));
+      if(!empty($dadosAlteracao)){
+         return $this->crudDefault($dadosAlteracao, "usuario", "edicao", array("id_usuario" => $dados['id_usuario']));
+      }else{
+         return true;
+      }
    }
 
    public function cadastraUsuario($dados){

@@ -45,7 +45,7 @@ class Aluno extends MY_Controller {
                 }
                 $dados['id_usuario'] = $infoUsuario['dados'][0]["id_usuario_aluno"];
                 $this->usuario_model->editaUsuario($dados);
-                $dadosaluno['descricao_aluno'] = $dados['descricao_usuario'];
+                $dadosaluno['descricao_usu_aluno'] = $dados['descricao_usuario'];
                 echo json_encode($this->aluno_model->crudDefault($dadosaluno, "usu_aluno", "edicao", $id));
             break;
         }
