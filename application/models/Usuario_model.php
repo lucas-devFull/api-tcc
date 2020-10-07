@@ -55,6 +55,7 @@ class Usuario_model extends MY_Model{
          echo json_encode(array("status" => false, "msg" => $validacaoLogin));
          exit;
       }
+      $dados['tipo_usuario'] = 2;
       $dados['senha_usuario'] = md5($dados['senha_usuario']);
       $id_usuario = $this->crudDefault($dados, "usuario", "cadastro");
       $dadosAluno['descricao_usu_aluno'] = $dados['descricao_usuario'];
