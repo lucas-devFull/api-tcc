@@ -2,7 +2,7 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 
-class Classe_model extends CI_Model {
+class Classe_model extends MY_Model {
 
 	public function __construct(){
         parent::__construct();
@@ -10,6 +10,6 @@ class Classe_model extends CI_Model {
     
     public function pegaClasse($dados){
         return $this->db->select("*")
-        ->get("usuario")->result_array();
+        ->get("classe")->result_array();
     }
 }

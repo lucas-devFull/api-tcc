@@ -8,10 +8,15 @@ class MY_Model extends CI_Model{
         parent::__construct();
     }
 
-    public function crudDefault($dados, $tabela, $tipo, $where = false){
+    public function crudDefault($dados, $tabela, $tipo, $where = false, $join = false){
         switch ($tipo) {
             case 'busca' :
                 (isset($dados['select'])) ? $this->db->select($dados['select']) : ""; 
+                if ($join != false) {
+                    foreach ($join as $value) {
+                        $this->db->join($value[0], $value[1], (count($value) < 3) ? "inner" : $value[2]);
+                    }
+                }
                 ($where != false && !empty($where) && !is_null($where)) ? $this->db->where($where) : "";
                 $resultado = $this->db->get($tabela);
                 if ($resultado->num_rows() > 0) {

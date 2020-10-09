@@ -14,14 +14,19 @@ class Aluno extends MY_Controller {
     {
         switch ($this->input->method()) {
             case 'get':
-                echo json_encode($this->aluno_model->crudDefault("", "usu_aluno", "busca", $this->getContent()));
+                $join = false;
+                if (isset($_GET['id_aluno'])) {
+                    $join[] = ['usuario','id_usuario = id_usuario_aluno'];
+                }
+                echo json_encode($this->aluno_model->crudDefault("", "usu_aluno", "busca", $this->getContent(), $join));
             break;
             case 'delete':
                 $dados = $this->getContent();
                 $id = array("id_aluno" => $dados['id_aluno']);
                 $infoUsuario = $this->aluno_model->crudDefault("", "usu_aluno", "busca", $id);
                 $idUsuario = array("id_usuario" => $infoUsuario["dados"][0]['id_usuario_aluno']);
-                $deletaraluno = $this->aluno_model->crudDefault("","usu_aluno", "deletar", $id);
+                $this->aluno_model->crudDefault("","usu_aluno", "deletar", $id);
+                $this->aluno_model->crudDefault("","alunos_classe", "deletar", $id);
                 $deletarUsuario = $this->aluno_model->crudDefault("","usuario", "deletar", $idUsuario);
                 echo json_encode($deletarUsuario);
             break;
