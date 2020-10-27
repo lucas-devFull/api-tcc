@@ -76,4 +76,15 @@ class MY_Model extends CI_Model{
 
         return true;
     }
+
+    // public function crudArray($dados, $key, $array, $tipo, $tabela){
+    //     foreach ($array as $value) {
+    //         $dados[$key] = $array;
+    //         $retorno = $this->materias_model->crudDefault($dados, $tabela, $tipo);
+    //         if ($retorno['status'] == false) {
+    //             echo json_encode($retorno);
+    //             exit;
+    //         }
+    //     }
+    // }
 }

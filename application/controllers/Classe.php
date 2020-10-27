@@ -36,16 +36,27 @@ class Classe extends MY_Controller {
             break;
             case 'post':
                 $dados = $this->getContent();
+                if ($dados['id_aluno']) {
+                    $id_aluno = $dados['id_aluno'];
+                    unset($dados['id_aluno']);    
+                }else {
+                    $id_aluno = false;
+                }
+
                 $id_classe = $this->classe_model->crudDefault($dados, "classe", "cadastro");
-                foreach ($dados['id_aluno'] as $value) {
-                    $insertAlunosClasse = array("id_classe" => $id_classe, "id_aluno" => $value);
-                    $retorno = $this->classe_model->crudDefault($insertAlunosClasse, "alunos_classe", "cadastro");
-                    if ($retorno['status'] == false) {
-                        echo json_encode($retorno);
-                        exit;
+
+                if ($id_aluno != false) {
+                    foreach ( $id_aluno as $value) {
+                        $insertAlunosClasse = array("id_classe" => $id_classe['id'], "id_aluno" => $value);
+                        $retorno = $this->classe_model->crudDefault($insertAlunosClasse, "alunos_classe", "cadastro");
+                        if ($retorno['status'] == false) {
+                            echo json_encode($retorno);
+                            exit;
+                        }
                     }
                 }
-                echo json_encode(array("status" => true, "id" => $id_classe));
+                
+                echo json_encode($id_classe);
             break;
             case 'put':
                 $join = false;
@@ -66,25 +77,30 @@ class Classe extends MY_Controller {
                 $alunosRetirados = array_diff($alunosAntigos, $dados["id_aluno"]);
                 $alunosAdicionados = array_diff($dados["id_aluno"], $alunosAntigos);
 
-                foreach ($alunosRetirados as $value) {
-                    $dadosDelete = $id;
-                    $dadosDelete["id_aluno"] = $value;
-                    $retorno = $this->classe_model->crudDefault("", "alunos_classe", "deletar", $dadosDelete);
-                    if($retorno['status'] == false){
-                        echo json_encode($retorno);
-                        exit;
+                if (!empty($alunosRetirados)) {
+                    foreach ($alunosRetirados as $value) {
+                        $dadosDelete = $id;
+                        $dadosDelete["id_aluno"] = $value;
+                        $retorno = $this->classe_model->crudDefault("", "alunos_classe", "deletar", $dadosDelete);
+                        if($retorno['status'] == false){
+                            echo json_encode($retorno);
+                            exit;
+                        }
                     }
                 }
 
-                foreach ($alunosAdicionados as $value) {
-                    $insertAlunosClasse = $id;
-                    $insertAlunosClasse['id_aluno'] = $value;
-                    $retorno = $this->classe_model->crudDefault($insertAlunosClasse, "alunos_classe", "cadastro");
-                    if ($retorno['status'] == false) {
-                        echo json_encode($retorno);
-                        exit;
+                if (!empty($alunosAdicionados)) {
+                    foreach ($alunosAdicionados as $value) {
+                        $insertAlunosClasse = $id;
+                        $insertAlunosClasse['id_aluno'] = $value;
+                        $retorno = $this->classe_model->crudDefault($insertAlunosClasse, "alunos_classe", "cadastro");
+                        if ($retorno['status'] == false) {
+                            echo json_encode($retorno);
+                            exit;
+                        }
                     }
                 }
+                
                 unset($dados['id_aluno']);
                 echo json_encode($this->classe_model->crudDefault($dados, "classe", "edicao", $id));
             break;
