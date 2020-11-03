@@ -26,8 +26,8 @@ class Modulos extends MY_Controller {
             case 'delete':
                 $dados = $this->getContent();
                 $idmodulo = array("id_modulo" => $dados['id_modulo']);
-                $this->modulos_model->crudDefault("", "modulos_materia", "deletar", $idmodulo);
-                $deleta_modulo = $this->modulos_model->crudDefault("", "modulos", "deletar", $idmodulo); // sp deixar deletar um modulo se n houver aulas relacionadas a ele 
+                $this->modulo_model->crudDefault("", "modulos_materia", "deletar", $idmodulo);
+                $deleta_modulo = $this->modulo_model->crudDefault("", "modulos", "deletar", $idmodulo); // sp deixar deletar um modulo se n houver aulas relacionadas a ele 
                 echo json_encode($deleta_modulo);
             break;
             case 'post':
