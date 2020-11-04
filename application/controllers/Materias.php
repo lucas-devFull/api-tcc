@@ -24,16 +24,12 @@ class Materias extends MY_Controller {
                     unset($_GET['id_materia']);
                 }
 
-                if (isset($_GET['id_classe']))  {
-                    $_GET['classe.id_classe'] = $_GET['id_classe'];
-                    unset($_GET['id_classe']);
-                }
 
-                $join[] = ['materias_classe','materias_classe.id_materia = materias.id_materia', 'left'];
-                $join[] = ['classe', 'classe.id_classe = materias_classe.id_classe'];
-                $join[] = ['alunos_classe', 'alunos_classe.id_classe = classe.id_classe'];
-                $join[] = ['usu_aluno', 'usu_aluno.id_aluno = alunos_classe.id_aluno'];
-                $dados['select'] = 'materias.id_materia, descricao_materia, classe.id_classe, descricao_classe, usu_aluno.id_aluno, descricao_usu_aluno';
+                // $join[] = ['materias_classe','materias_classe.id_materia = materias.id_materia', 'left'];
+                // $join[] = ['classe', 'classe.id_classe = materias_classe.id_classe'];
+                // $join[] = ['alunos_classe', 'alunos_classe.id_classe = classe.id_classe'];
+                // $join[] = ['usu_aluno', 'usu_aluno.id_aluno = alunos_classe.id_aluno'];
+                // $dados['select'] = 'materias.id_materia, descricao_materia, classe.id_classe, descricao_classe, usu_aluno.id_aluno, descricao_usu_aluno';
                 echo json_encode($this->materias_model->crudDefault($dados, "materias", "busca", $_GET, $join));
             break;
             case 'delete':
@@ -41,7 +37,7 @@ class Materias extends MY_Controller {
                 $idmateria = array("id_materia" => $dados['id_materia']);
                 $this->materias_model->crudDefault("", "materias_classe", "deletar", $idmateria);
                 $this->materias_model->crudDefault("", "modulos_materia", "deletar", $idmateria);
-                $deleta_materia = $this->materias_model->crudDefault("", "materia", "deletar", $idmateria);
+                $deleta_materia = $this->materias_model->crudDefault("", "materias", "deletar", $idmateria);
                 echo json_encode($deleta_materia);
             break;
             case 'post':

@@ -70,7 +70,7 @@ class MY_Model extends CI_Model{
         if (isset($dados['nick_usuario'])) {
             $this->db->where("nick_usuario", $dados['nick_usuario']);
             if($this->db->get("usuario")->result_array()){
-                return "ja existe este email cadastrado -> " . $dados['nick_usuario'];
+                return "ja existe este nick cadastrado -> " . $dados['nick_usuario'];
             }
         }
 
