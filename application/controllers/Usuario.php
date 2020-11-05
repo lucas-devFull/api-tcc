@@ -28,6 +28,7 @@ class Usuario extends CI_Controller {
                     $token = $this->authorization_token->generateToken($data);
                     $data['tipo'] = $resultado["tipo_usuario"];
                     $data['token'] = $token;
+                    $data['imagem'] = $resultado['imagem'];
                     echo json_encode(array('status' => true, 'dados' => $data));
                 }else{
                     echo json_encode(array('status' => false));

@@ -15,10 +15,11 @@ class Professor extends MY_Controller {
         switch ($this->input->method()) {
             case 'get':
                 $join = false;
-                if (isset($_GET['id_professor'])) {
-                    $join[] = ['usuario','id_usuario = id_usuario_professor'];
-                }
-                echo json_encode($this->professor_model->crudDefault("", "usu_professor", "busca", $_GET, $join));
+                // if (isset($_GET['id_professor'])) {
+                $join[] = ['usuario','id_usuario = id_usuario_professor'];
+                $select['select'] = "id_professor, id_usuario, descricao_professor, nick_usuario, email_usuario, TO_BASE64(imagem_usuario) as imagem";
+                // }
+                echo json_encode($this->professor_model->crudDefault($select, "usu_professor", "busca", $_GET, $join));
             break;
             case 'delete':
                 $dados = $this->getContent();

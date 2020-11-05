@@ -10,7 +10,7 @@ class Usuario_model extends MY_Model{
    public function getUsers($dados)
    {
       if ($dados) {
-         return $this->db->select("*")
+         return $this->db->select("*, TO_BASE64(imagem_usuario) as imagem")
          ->where("email_usuario", $dados['login'])
          ->or_where("nick_usuario", $dados['login'])
          ->having("senha_usuario", md5($dados['senha']))
