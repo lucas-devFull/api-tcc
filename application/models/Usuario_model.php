@@ -32,7 +32,11 @@ class Usuario_model extends MY_Model{
 
    public function editaUsuario($dados){
 
-      $dados['senha_usuario'] = md5($dados['senha_usuario']);
+      if ($dados['senha_usuario'] == "") {
+         unset($dados['senha_usuario']);
+      }else{
+         $dados['senha_usuario'] = md5($dados['senha_usuario']);
+      }
       $infoUsuario = $this->buscaUsuario($dados['id_usuario']);
       $dadosAlteracao = array_diff($dados, $infoUsuario);
       if (isset($dadosAlteracao['email_usuario']) || isset($dadosAlteracao['nick_usuario'])) {

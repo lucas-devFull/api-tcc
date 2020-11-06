@@ -32,26 +32,27 @@ class Professor extends MY_Controller {
             break;
             case 'post':
                 $dados = $this->getContent();
+                $id = 0;
                 $dados['tipo_usuario'] = 1;
-                $id_usuario = $this->usuario_model->cadastraUsuarioDefault($dados);
-                $dadosProfessor['descricao_professor'] = $dados['descricao_usuario'];
-                $dadosProfessor['id_usuario_professor'] = $id_usuario['id'];
-                echo json_encode($this->professor_model->crudDefault($dadosProfessor, "usu_professor", "cadastro"));
-            break;
-            case 'put':
-                $dados = $this->getContent();
-                $dados['tipo_usuario'] = 1;
-                $id = array("id_professor" => $dados['id_professor']);
-                unset($dados['id_professor']);
-                $infoUsuario = $this->professor_model->crudDefault("", "usu_professor", "busca", $id);
-                if(!$infoUsuario['status']) {
-                    echo json_encode($infoUsuario);
-                    exit;
+                if (isset($dados['id'])) {
+                    $id = array("id_professor" => $dados['id']);
+                    unset($dados['id']);
+                    $infoUsuario = $this->professor_model->crudDefault("", "usu_professor", "busca", $id);
+                    if(!$infoUsuario['status']) {
+                        echo json_encode($infoUsuario);
+                        exit;
+                    }
+                    $dados['id_usuario'] = $infoUsuario['dados'][0]["id_usuario_professor"];
+                    $this->usuario_model->editaUsuario($dados);
+                    $dadosProfessor['descricao_professor'] = $dados['descricao_usuario'];
+                    echo json_encode($this->professor_model->crudDefault($dadosProfessor, "usu_professor", "edicao", $id));
+
+                }else{
+                    $id_usuario = $this->usuario_model->cadastraUsuarioDefault($dados);
+                    $dadosProfessor['descricao_professor'] = $dados['descricao_usuario'];
+                    $dadosProfessor['id_usuario_professor'] = $id_usuario['id'];
+                    echo json_encode($this->professor_model->crudDefault($dadosProfessor, "usu_professor", "cadastro"));
                 }
-                $dados['id_usuario'] = $infoUsuario['dados'][0]["id_usuario_professor"];
-                $this->usuario_model->editaUsuario($dados);
-                $dadosProfessor['descricao_professor'] = $dados['descricao_usuario'];
-                echo json_encode($this->professor_model->crudDefault($dadosProfessor, "usu_professor", "edicao", $id));
             break;
         }
     }
