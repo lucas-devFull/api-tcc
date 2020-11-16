@@ -16,16 +16,12 @@ class Modulos extends MY_Controller {
     public function index(){
         switch ($this->input->method()) {
             case 'get':
-                $join = false;
-                $dados = false;
-
-                $retorno = $this->modulo_model->crudDefault($dados, "modulos", "busca", $_GET, $join);
-                $retorno['materias'] = $this->modulo_model->buscaMateriasPorModulos(isset($_GET['id_modulo']) ? $_GET['id_modulo'] : "");
+                $retorno = $this->modulo_model->crudDefault(false, "modulos", "busca", $_GET, false);
                 echo json_encode($retorno);
             break;
             case 'delete':
                 $dados = $this->getContent();
-                $idmodulo = array("id_modulo" => $dados['id_modulo']);
+                $idmodulo = array("mod_id" => $dados['mod_id']);
                 $this->modulo_model->crudDefault("", "modulos_materia", "deletar", $idmodulo);
                 $deleta_modulo = $this->modulo_model->crudDefault("", "modulos", "deletar", $idmodulo); // sp deixar deletar um modulo se n houver aulas relacionadas a ele 
                 echo json_encode($deleta_modulo);
@@ -39,11 +35,11 @@ class Modulos extends MY_Controller {
                     $id_materia = false;
                 }
 
-                $id_modulo = $this->modulos_model->crudDefault($dados, "modulos", "cadastro");
+                $mod_id = $this->modulos_model->crudDefault($dados, "modulos", "cadastro");
 
                 if ($id_materia != false) {
                     foreach ($id_materia as $value) {
-                        $insertModulosMateria = array("id_modulo" => $id_modulo, "id_materia" => $value);
+                        $insertModulosMateria = array("mod_id" => $mod_id, "id_materia" => $value);
                         $retorno = $this->modulos_model->crudDefault($insertModulosMateria, "modulos_materia", "cadastro");
                         if ($retorno['status'] == false) {
                             echo json_encode($retorno);
@@ -52,12 +48,12 @@ class Modulos extends MY_Controller {
                     }
                 }
                 
-                echo json_encode(array("status" => true, "id" => $id_modulo));
+                echo json_encode(array("status" => true, "id" => $mod_id));
             break;
             case 'put':
                 $dados = $this->getContent();
-                $id = array("id_modulo" => $dados['id_modulo']);
-                unset($dados['id_modulo']);
+                $id = array("mod_id" => $dados['mod_id']);
+                unset($dados['mod_id']);
                 $infoUsuario = $this->modulos_model->crudDefault("", "modulos_materia", "busca", $id);
                 if(!$infoUsuario['status']) {
                     echo json_encode($infoUsuario);

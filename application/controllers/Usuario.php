@@ -29,13 +29,19 @@ class Usuario extends CI_Controller {
                     $data['tipo'] = $resultado["tipo_usuario"];
                     $data['token'] = $token;
                     $data['imagem'] = $resultado['imagem'];
+                    $data['imagem'] = $resultado['imagem'];
+                    $data['imagem'] = $resultado['imagem'];
                     echo json_encode(array('status' => true, 'dados' => $data));
                 }else{
                     echo json_encode(array('status' => false));
                 }
             break;
             case 'post':
-                echo json_encode($this->usuario_model->cadastraUsuario($_POST));
+                if (isset($_POST['id'])) {
+                    echo json_encode($this->usuario_model->cadastraUsuario($_POST));
+                }else{
+                    echo json_encode($this->usuario_model->cadastraUsuario($_POST));
+                }
             break;
         }
     }
