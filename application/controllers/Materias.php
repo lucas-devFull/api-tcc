@@ -19,22 +19,45 @@ class Materias extends MY_Controller {
             case 'get':
                 $join = false;
                 $dados = false;
+                $dadosRetorno = [];
+                
                 if (isset($_GET['id_materia']))  {
                     $_GET['materias.id_materia'] = $_GET['id_materia'];
                     unset($_GET['id_materia']);
                 }
-
-
-                if($dados['tipo_usuario'] == 2){
-                    $id = array("id_usuario" =>  $dados['id']);
+                
+                if (!isset($_GET['tipo_usuario']) || !isset($_GET['id_usuario'])) {
+                    echo(json_encode(array("status" => false, "msg" => "sem tipo ou id usuario")));
+                    return;
                 }
+                
+                if($_GET['tipo_usuario'] == 2){
+                    $id = array("usuario.id_usuario" =>  $_GET['id_usuario']);
 
-                // $join[] = ['materias_classe','materias_classe.id_materia = materias.id_materia', 'left'];
-                // $join[] = ['classe', 'classe.id_classe = materias_classe.id_classe'];
-                // $join[] = ['alunos_classe', 'alunos_classe.id_classe = classe.id_classe'];
-                // $join[] = ['usu_aluno', 'usu_aluno.id_aluno = alunos_classe.id_aluno'];
-                // $dados['select'] = 'materias.id_materia, descricao_materia, classe.id_classe, descricao_classe, usu_aluno.id_aluno, descricao_usu_aluno';
-                echo json_encode($this->materias_model->crudDefault($dados, "materias", "busca", $_GET, $join));
+                    $join[] = ['usu_aluno','usu_aluno.id_usuario_aluno = usuario.id_usuario', 'left'];
+                    $join[] = ['alunos_classe','alunos_classe.id_aluno = usu_aluno.id_aluno', 'left'];
+                    $join[] = ['classe','classe.id_classe = alunos_classe.id_classe', 'left'];
+                    $join[] = ['materias_classe','materias_classe.id_classe = classe.id_classe', 'left'];
+                    $join[] = ['materias','materias.id_materia = materias_classe.id_materia', 'left'];
+
+                    $dadosRetorno = $this->materias_model->crudDefault(
+                        array("select" => "materias.id_materia, materias.descricao_materia"),
+                        "usuario",
+                        "busca",
+                        $id,
+                        $join
+                    );
+                }else{
+                    $id = array("materias.id_usuario" =>  $_GET['id_usuario']);
+                    $dadosRetorno = $this->materias_model->crudDefault(
+                        array("select" => "materias.id_materia, materias.descricao_materia"),
+                        "materias",
+                        "busca",
+                        ($_GET['tipo_usuario'] == 0) ? false : $id,
+                        $join
+                    );
+                }
+                echo json_encode($dadosRetorno);
             break;
             case 'delete':
                 $dados = $this->getContent();
