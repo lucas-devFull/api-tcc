@@ -25,6 +25,10 @@ class Materias extends MY_Controller {
                 }
 
 
+                if($dados['tipo_usuario'] == 2){
+                    $id = array("id_usuario" =>  $dados['id']);
+                }
+
                 // $join[] = ['materias_classe','materias_classe.id_materia = materias.id_materia', 'left'];
                 // $join[] = ['classe', 'classe.id_classe = materias_classe.id_classe'];
                 // $join[] = ['alunos_classe', 'alunos_classe.id_classe = classe.id_classe'];
@@ -42,26 +46,22 @@ class Materias extends MY_Controller {
             break;
             case 'post':
                 $dados = $this->getContent();
-                if (isset($dados['id_classe'])) {
-                    $id_classe = $dados['id_classe'];
-                    unset($dados['id_classe']);    
+
+                $dadosMaterias = array("descricao_materia" => $dados['descricao_materia']);
+                if ($dados['tipo_usuario'] == 1) {
+                    $dadosMaterias['id_usuario'] = $dados['id_usuario'];
+                }
+ 
+                if (isset($dados['id_materia'])) {
+                    $id_materia = array("id_materia" => $dados['id']);
+                    $id_materia = $this->materias_model->crudDefault($dadosMaterias, "materias", "edicao", $id_materia);
+                    $this->materias_model->crudDefault(array("id_modulo" => $dados['id_modulo'], "id_materia" => $id_materia['id']), "modulos_materia", "edicao", $id_materia);
+
                 }else{
-                    $id_classe = false;
+                    $id_materia = $this->materias_model->crudDefault($dadosMaterias, "materias", "cadastro");
+                    $this->materias_model->crudDefault(array("id_modulo" => $dados['id_modulo'], "id_materia" => $id_materia['id']), "modulos_materia", "cadastro");
                 }
 
-                $id_materia = $this->materias_model->crudDefault($dados, "materias", "cadastro");
-
-                if ($id_classe != false) {
-                    foreach ($id_classe as $value) {
-                        $insertAlunosClasse = array("id_materia" => $id_materia, "id_classe" => $value);
-                        $retorno = $this->materias_model->crudDefault($insertAlunosClasse, "materias_classe", "cadastro");
-                        if ($retorno['status'] == false) {
-                            echo json_encode($retorno);
-                            exit;
-                        }
-                    }
-                }
-                
                 echo json_encode(array("status" => true, "id" => $id_materia));
             break;
             case 'put':
