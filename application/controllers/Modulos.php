@@ -28,27 +28,13 @@ class Modulos extends MY_Controller {
             break;
             case 'post':
                 $dados = $this->getContent();
-                if (isset($dados['id_materia'])) {
-                    $id_materia = $dados['id_materia'];
-                    unset($dados['id_materia']);    
+                $retorno = array();
+                if (isset($dados['mod_id'])) {
+                    $retorno = $this->modulo_model->crudDefault($dados, "modulos", "edicao", array("mod_id" => $dados['mod_id']));
                 }else{
-                    $id_materia = false;
+                    $retorno = $this->modulo_model->crudDefault($dados, "modulos", "cadastro");
                 }
-
-                $mod_id = $this->modulos_model->crudDefault($dados, "modulos", "cadastro");
-
-                if ($id_materia != false) {
-                    foreach ($id_materia as $value) {
-                        $insertModulosMateria = array("mod_id" => $mod_id, "id_materia" => $value);
-                        $retorno = $this->modulos_model->crudDefault($insertModulosMateria, "modulos_materia", "cadastro");
-                        if ($retorno['status'] == false) {
-                            echo json_encode($retorno);
-                            exit;
-                        }
-                    }
-                }
-                
-                echo json_encode(array("status" => true, "id" => $mod_id));
+                echo json_encode(array("status" => true, "id" => $retorno));
             break;
             case 'put':
                 $dados = $this->getContent();

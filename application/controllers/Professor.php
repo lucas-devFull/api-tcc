@@ -34,9 +34,9 @@ class Professor extends MY_Controller {
                 $dados = $this->getContent();
                 $id = 0;
                 $dados['tipo_usuario'] = 1;
-                if (isset($dados['id'])) {
-                    $id = array("id_professor" => $dados['id']);
-                    unset($dados['id']);
+                if (isset($dados['id_professor'])) {
+                    $id = array("id_professor" => $dados['id_professor']);
+                    unset($dados['id_professor']);
                     $infoUsuario = $this->professor_model->crudDefault("", "usu_professor", "busca", $id);
                     if(!$infoUsuario['status']) {
                         echo json_encode($infoUsuario);
