@@ -1,26 +1,29 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Usuario_model extends MY_Model{
+class Usuario_model extends MY_Model
+{
 
-   public function __construct(){
-       parent::__construct();
+   public function __construct()
+   {
+      parent::__construct();
    }
 
    public function getUsers($dados)
    {
       if ($dados) {
          return $this->db->select("*, TO_BASE64(imagem_usuario) as imagem")
-         ->where("email_usuario", $dados['login'])
-         ->or_where("nick_usuario", $dados['login'])
-         ->having("senha_usuario", md5($dados['senha']))
-         ->get("usuario")->row_array();
-      }else{
+            ->where("email_usuario", $dados['login'])
+            ->or_where("nick_usuario", $dados['login'])
+            ->having("senha_usuario", md5($dados['senha']))
+            ->get("usuario")->row_array();
+      } else {
          return false;
       }
    }
 
-   public function cadastraUsuarioDefault($dados){
+   public function cadastraUsuarioDefault($dados)
+   {
       $validacaoLogin = $this->validaNickUsuario($dados);
       if (is_string($validacaoLogin)) {
          echo json_encode(array("status" => false, "msg" => $validacaoLogin));
@@ -30,11 +33,36 @@ class Usuario_model extends MY_Model{
       return $this->crudDefault($dados, "usuario", "cadastro");
    }
 
-   public function editaUsuario($dados){
+   public function editaUsuarioPorTipo($dados, $imagem)
+   {
+      $dados['imagem_usuario'] = addslashes(file_get_contents($imagem['tmp_name']));
+      $this->editaUsuario($dados);
+      switch ($dados["tipo_usuario"]) {
+         case '1':
+            $alteração = $this->crudDefault(array("descricao_professor" => $dados['descricao_usuario']), "usu_professor", "edicao", array("id_usuario_professor" => $dados['id_usuario']));
+            if ($alteração['status']) {
+               echo(json_encode(array("status" => true)));
+            }else{
+               echo(json_encode(array("status" => false)));
+            }
+            break;
+         case '2':
+            $alteração = $this->crudDefault(array("descricao_usu_aluno" => $dados['descricao_usuario']), "usu_aluno", "edicao", array("id_usuario_aluno" => $dados['id_usuario']));
+            if ($alteração['status']) {
+               echo(json_encode(array("status" => true)));
+            }else{
+               echo(json_encode(array("status" => false)));
+            }
+            break;
+      }
+   }
+
+   public function editaUsuario($dados)
+   {
 
       if ($dados['senha_usuario'] == "") {
          unset($dados['senha_usuario']);
-      }else{
+      } else {
          $dados['senha_usuario'] = md5($dados['senha_usuario']);
       }
       $infoUsuario = $this->buscaUsuario($dados['id_usuario']);
@@ -46,14 +74,15 @@ class Usuario_model extends MY_Model{
             exit;
          }
       }
-      if(!empty($dadosAlteracao)){
+      if (!empty($dadosAlteracao)) {
          return $this->crudDefault($dadosAlteracao, "usuario", "edicao", array("id_usuario" => $dados['id_usuario']));
-      }else{
+      } else {
          return true;
       }
    }
 
-   public function cadastraUsuario($dados){
+   public function cadastraUsuario($dados)
+   {
       $validacaoLogin = $this->validaNickUsuario($dados);
       if (is_string($validacaoLogin)) {
          echo json_encode(array("status" => false, "msg" => $validacaoLogin));
@@ -67,15 +96,15 @@ class Usuario_model extends MY_Model{
       return $this->crudDefault($dadosAluno, "usu_aluno", "cadastro");
    }
 
-   public function buscaUsuario($id = 0){
+   public function buscaUsuario($id = 0)
+   {
       if ($id != 0) {
          return $this->db->select("*")
-         ->where("id_usuario", $id)
-         ->get("usuario")->row_array();
-      }else{
+            ->where("id_usuario", $id)
+            ->get("usuario")->row_array();
+      } else {
          return $this->db->select("*")
-         ->get("usuario")->result_array();
+            ->get("usuario")->result_array();
       }
-
    }
 }
