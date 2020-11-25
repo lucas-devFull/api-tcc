@@ -78,11 +78,11 @@ class Materias extends MY_Controller {
                 if (isset($dados['id_materia'])) {
                     $id_materia = array("id_materia" => $dados['id']);
                     $id_materia = $this->materias_model->crudDefault($dadosMaterias, "materias", "edicao", $id_materia);
-                    $this->materias_model->crudDefault(array("id_modulo" => $dados['id_modulo'], "id_materia" => $id_materia['id']), "modulos_materia", "edicao", $id_materia);
+                    $this->materias_model->crudDefault(array("mod_id" => $dados['mod_id'], "id_materia" => $id_materia['id']), "modulos_materia", "edicao", $id_materia);
 
                 }else{
                     $id_materia = $this->materias_model->crudDefault($dadosMaterias, "materias", "cadastro");
-                    $this->materias_model->crudDefault(array("id_modulo" => $dados['id_modulo'], "id_materia" => $id_materia['id']), "modulos_materia", "cadastro");
+                    $this->materias_model->crudDefault(array("mod_id" => $dados['mod_id'], "id_materia" => $id_materia['id']), "modulos_materia", "cadastro");
                 }
 
                 echo json_encode(array("status" => true, "id" => $id_materia));
