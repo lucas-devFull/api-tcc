@@ -40,7 +40,7 @@ class Usuario extends CI_Controller {
             break;
             case 'post':
                 if (isset($_POST['id_usuario'])) {
-                    echo json_encode($this->usuario_model->editaUsuarioPorTipo($_POST, $_FILES['imagem_usuario']));
+                    echo json_encode($this->usuario_model->editaUsuarioPorTipo($_POST, isset($_FILES['imagem_usuario']) ? $_FILES['imagem_usuario'] : null ));
                 }else{
                     echo json_encode($this->usuario_model->cadastraUsuario($_POST));
                 }

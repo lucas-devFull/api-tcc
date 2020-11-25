@@ -35,25 +35,17 @@ class Usuario_model extends MY_Model
 
    public function editaUsuarioPorTipo($dados, $imagem)
    {
-      $dados['imagem_usuario'] = addslashes(file_get_contents($imagem['tmp_name']));
+      $dados['imagem_usuario'] = is_null($imagem) ? $imagem : file_get_contents($imagem['tmp_name']);
       $this->editaUsuario($dados);
       switch ($dados["tipo_usuario"]) {
          case '1':
-            $alteração = $this->crudDefault(array("descricao_professor" => $dados['descricao_usuario']), "usu_professor", "edicao", array("id_usuario_professor" => $dados['id_usuario']));
-            if ($alteração['status']) {
-               echo(json_encode(array("status" => true)));
-            }else{
-               echo(json_encode(array("status" => false)));
-            }
+            return $this->crudDefault(array("descricao_professor" => $dados['descricao_usuario']), "usu_professor", "edicao", array("id_usuario_professor" => $dados['id_usuario']));
             break;
          case '2':
-            $alteração = $this->crudDefault(array("descricao_usu_aluno" => $dados['descricao_usuario']), "usu_aluno", "edicao", array("id_usuario_aluno" => $dados['id_usuario']));
-            if ($alteração['status']) {
-               echo(json_encode(array("status" => true)));
-            }else{
-               echo(json_encode(array("status" => false)));
-            }
+            return $this->crudDefault(array("descricao_usu_aluno" => $dados['descricao_usuario']), "usu_aluno", "edicao", array("id_usuario_aluno" => $dados['id_usuario']));
             break;
+         default:
+            return array("status" => true);
       }
    }
 
@@ -65,6 +57,11 @@ class Usuario_model extends MY_Model
       } else {
          $dados['senha_usuario'] = md5($dados['senha_usuario']);
       }
+
+      if (is_null($dados['imagem_usuario'])) {
+         unset($dados['imagem_usuario']);
+      }
+
       $infoUsuario = $this->buscaUsuario($dados['id_usuario']);
       $dadosAlteracao = array_diff($dados, $infoUsuario);
       if (isset($dadosAlteracao['email_usuario']) || isset($dadosAlteracao['nick_usuario'])) {
