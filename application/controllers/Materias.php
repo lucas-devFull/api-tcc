@@ -136,7 +136,31 @@ class Materias extends MY_Controller {
         }
     }
 
-    public function acoesClasse(){
-        
+    public function materiasPorModulo(){
+        if(isset($_GET['mod_id'])){
+            $join = [];
+            $join[] = ['materias','materias.id_materia = modulos_materia.id_materia', 'left'];
+            echo json_encode($this->materias_model->crudDefault("", "modulos_materia", "busca", $_GET, $join));
+        }else{
+            echo json_encode(array("status" => false, "msg" => "não tem o id do modulo"));
+        }
+    }
+
+    public function aulaPorMateria(){
+        if(isset($_GET['aula_id_materia'])){
+            echo json_encode($this->materias_model->crudDefault("", "aulas", "busca", $_GET));
+        }else{
+            echo json_encode(array("status" => false, "msg" => "não tem o id da materia"));
+        }
+    }
+
+    public function classePorMateria(){
+        if(isset($_GET['id_materia'])){
+            $join = [];
+            $join[] = ['classe','classe.id_classe = materias_classe.id_classe', 'left'];
+            echo json_encode($this->materias_model->crudDefault("", "materias_classe", "busca", $_GET, $join));
+        }else{
+            echo json_encode(array("status" => false, "msg" => "não tem o id da materia"));
+        }
     }
 }

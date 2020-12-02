@@ -58,7 +58,7 @@ class Usuario_model extends MY_Model
          $dados['senha_usuario'] = md5($dados['senha_usuario']);
       }
 
-      if (is_null($dados['imagem_usuario'])) {
+      if (isset($dados['imagem_usuario']) && is_null($dados['imagem_usuario'])) {
          unset($dados['imagem_usuario']);
       }
 

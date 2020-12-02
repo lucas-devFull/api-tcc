@@ -22,7 +22,7 @@ class MY_Model extends CI_Model{
                 if ($resultado->num_rows() > 0) {
                     return array("status" => true, "dados" => $resultado->result_array());
                 }else{
-                    return array("status" => false, "dados" => "não tem dados");
+                    return array("status" => false, "msg" => "não tem dados");
                 }
             break;
             case 'cadastro':
